@@ -2,14 +2,20 @@
 
 namespace App\Model;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
-    public function users()
+    protected $guarded = [];
+    public function getRouteKeyName()
     {
-        return $this->belongsTo(User::class);
+        return 'slug';
     }
+   public function user()
+   {
+       return $this->belongsTo(User::class);
+   }
 
     public function replies()
     {
@@ -19,5 +25,10 @@ class Question extends Model
     public function categories()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getPathAttribute()
+    {
+        return asset("api/question/$this->slug");    
     }
 }
