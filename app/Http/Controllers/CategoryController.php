@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
 use App\Model\Category;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        return CategoryResource::collection(Category::latest()->get());
     }
 
     /**
@@ -35,7 +36,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Category::create($request->all());
+
+        return response('Created', 202);
     }
 
     /**
@@ -46,7 +49,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        return new CategoryResource($category);
     }
 
     /**
@@ -69,7 +72,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $category->update([
+            'name'=>$request->name,
+            'slug'=>str_slug($request->name)
+        ]);
+
+        return response('Updated', 200);
+        
     }
 
     /**
@@ -80,6 +89,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+
+        return response(null, 204);
+
     }
 }
